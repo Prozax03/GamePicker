@@ -11,8 +11,9 @@
       text-align: center;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
+      background-color: #212121;
       color: #333;
+      overflow-x: hidden;
     }
 
     h1 {
@@ -20,6 +21,10 @@
       font-size: 2.5rem;
       color: #4CAF50;
     }
+	
+	h2 {
+		color: #e6e6e6;
+	}
 
     .container {
       display: flex;
@@ -46,11 +51,31 @@
       color: white;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #45a049;
+    
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      opacity: 0.7;
     }
 
+    button:hover:not(:disabled) {
+      background-color: #45a049;
+    }
+	
+	.buttonBlue {
+	      background-color: #046bda;
+	}
+	.buttonBlue:hover:not(:disabled) {
+	      background-color: #0351a6;
+	}
+
+	.buttonRed {
+	      background-color: #da0704;
+	}
+	.buttonRed:hover:not(:disabled) {
+	      background-color: #a60503;
+	}
+	
     #game-list {
       margin: 20px auto;
       padding: 0;
@@ -80,6 +105,7 @@
       font-size: 1.5rem;
       font-weight: bold;
       color: #4CAF50;
+      transition: all 0.3s ease;
     }
 
     .session {
@@ -108,6 +134,21 @@
       font-size: 1rem;
       color: #fff;
     }
+	
+	.logo-container {
+	  text-align: center;
+	  margin: 20px 0;
+	}
+
+	.logo {
+	  max-width: 230px;
+	  height: auto;
+	  border-radius: 10px;
+	}
+	
+	.toCenter {
+		text-align: center;
+	}
 
     .shake {
       animation: shake 0.5s;
@@ -127,20 +168,288 @@
         transform: translateX(-5px);
       }
     }
+    
+    /* Fireworks Animation Styles */
+    .firework-container {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	  pointer-events: none;
+	  z-index: 10001;
+	}
+
+	.firework {
+	  position: absolute;
+	  width: 6px;
+	  height: 6px;
+	  border-radius: 50%;
+	  box-shadow: 0 0 10px 4px;
+	  animation: explode 1.5s ease-out forwards;
+	}
+
+	.particle {
+	  position: absolute;
+	  width: 4px;
+	  height: 4px;
+	  border-radius: 50%;
+	  box-shadow: 0 0 8px 3px;
+	  animation: spread 1.5s ease-out forwards;
+	}
+
+	@keyframes explode {
+	  0% {
+		transform: translate(0, 100vh);
+		opacity: 1;
+	  }
+	  20% {
+		opacity: 1;
+	  }
+	  30% {
+		opacity: 0.8;
+	  }
+	  100% {
+		transform: translate(0, 30vh);
+		opacity: 0;
+	  }
+	}
+
+	@keyframes spread {
+	  0% {
+		opacity: 1;
+	  }
+	  40% {
+		opacity: 0.8;
+	  }
+	  100% {
+		transform: translate(var(--tx), var(--ty));
+		opacity: 0;
+	  }
+	}
+    
+    .highlight-selection {
+      animation: highlight 1.5s ease-in-out;
+    }
+    
+    @keyframes highlight {
+      0% {
+        transform: scale(1);
+        text-shadow: 0 0 0 transparent;
+      }
+      50% {
+        transform: scale(1.3);
+        text-shadow: 0 0 20px #4CAF50, 0 0 40px #4CAF50;
+      }
+      100% {
+        transform: scale(1);
+        text-shadow: 0 0 10px #4CAF50;
+      }
+    }
+    
+    /* Styles pour le décompte */
+    #countdown {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      font-size: 6rem;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    /* Styles pour la popup */
+    .popup-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .popup {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 80%;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+    }
+    
+    .popup h2 {
+      color: #4CAF50;
+      margin-top: 0;
+    }
+    
+    .popup p {
+      font-size: 1.8rem;
+      margin: 20px 0;
+    }
+    
+    .popup button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    
+    .popup button:hover {
+      background-color: #45a049;
+    }
+	
+	.share-button {
+	  position: fixed;
+	  top: 20px;
+	  right: 20px;
+	  background-color: #4CAF50;
+	  color: white;
+	  border: none;
+	  border-radius: 50%;
+	  width: 50px;
+	  height: 50px;
+	  font-size: 24px;
+	  cursor: pointer;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	  z-index: 1000;
+	}
+
+	.share-button:hover {
+	  background-color: #45a049;
+	}
+
+	.copy-button {
+	  background-color: #046bda;
+	  color: white;
+	  border: none;
+	  border-radius: 5px;
+	  padding: 5px 10px;
+	  font-size: 0.8rem;
+	  cursor: pointer;
+	  margin-left: 5px;
+	}
+
+	.copy-button:hover {
+	  background-color: #0351a6;
+	}
+
+	.copy-success {
+	  position: fixed;
+	  top: 20px;
+	  left: 50%;
+	  transform: translateX(-50%);
+	  background-color: #4CAF50;
+	  color: white;
+	  padding: 10px 20px;
+	  border-radius: 5px;
+	  z-index: 2000;
+	  display: none;
+	  animation: fadeInOut 2s ease-in-out;
+	}
+
+	@keyframes fadeInOut {
+	  0% { opacity: 0; }
+	  10% { opacity: 1; }
+	  90% { opacity: 1; }
+	  100% { opacity: 0; }
+	}
+	
+	.input-with-button {
+	  position: relative;
+	  display: inline-block;
+	  width: 200px;
+	}
+
+	.input-with-button input {
+	  padding-right: 40px; /* Espace pour le bouton à droite */
+	  width: 100%;
+	  box-sizing: border-box;
+	}
+
+	.input-with-button button {
+	  position: absolute;
+	  right: -10px;
+	  top: 11px;
+	  height: 65%;
+	  width: 35px;
+	  background-color: transparent;
+	  border: none;
+	  border-left: 0px solid #ccc;
+	  cursor: pointer;
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	  margin: 0;
+	  padding: 0;
+	  border-radius: 0 5px 5px 0;
+	}
+
+	.input-with-button button:hover {
+	  background-color: #f0f0f0;
+	  color: #046bda;
+	}
   </style>
 </head>
 <body>
-  <h1>Game Picker</h1>
+  <div class="logo-container">
+    <img src="/img/logo.png" alt="Game Picker Logo" class="logo">
+  </div>
+  
+	<!-- Notification de copie réussie -->
+	<div id="copy-success" class="copy-success">Copié !</div>
+
+	<!-- Bouton de partage -->
+	<button id="share-button" class="share-button" title="Partager la session">
+	  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<circle cx="18" cy="5" r="3"></circle>
+		<circle cx="6" cy="12" r="3"></circle>
+		<circle cx="18" cy="19" r="3"></circle>
+		<line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+		<line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+	  </svg>
+	</button>
+
+	<!-- Popup de partage -->
+	<div class="popup-container" id="share-popup">
+	  <div class="popup">
+		<h2>Partager cette session</h2>
+		<p>Copiez ce lien pour inviter d'autres joueurs :</p>
+		<input type="text" id="share-link" readonly style="width: 100%; margin-bottom: 15px; padding: 8px;">
+		<button id="copy-share-link">Copier le lien</button>
+		<button id="close-share-popup" style="margin-left: 10px;">Fermer</button>
+	  </div>
+	</div>
+  
+  
+  <!--<h1>Game Picker</h1>-->
   <div class="container">
     <div class="session">
-      <input id='username' type='text' placeholder='Enter your username' />
-      <input id='session-id' type='text' placeholder='Enter session ID' />
-      <button id='join-session'>Join/Create Session</button>
-    </div>
+	  <input id='username' type='text' placeholder='Enter your username' />
+	  <div class="input-with-button">
+		<input id='session-id' type='text' placeholder='Enter session ID' />
+		<button id="copy-session-id" title="Copier l'ID">📋</button>
+	  </div>
+	  <button class="buttonBlue" id='join-session' style='margin-left: 28px;'>Join/Create Session</button>
+	</div>
     <div id='main-content' style='display: none;'>
       <input id='game-input' type='text' placeholder='Enter a game' />
       <button id='add-game'>Add Game</button>
-      <button id='clear-games'>Clear List</button>
+      <button class="buttonRed" id='clear-games'>Clear List</button>
       <button id='pick-random'>Pick Random</button>
 
       <h2>Game List</h2>
@@ -151,7 +460,20 @@
   </div>
 
   <div id="user-list">
-    <h3>Participants</h3>
+    <h3 class="toCenter">Participants</h3>
+	<hr>
+  </div>
+  
+  <!-- Élément de décompte -->
+  <div id="countdown"></div>
+  
+  <!-- Popup pour afficher le résultat -->
+  <div class="popup-container" id="result-popup">
+    <div class="popup">
+      <h2>Game Selected!</h2>
+      <p id="popup-game"></p>
+      <button id="close-popup">OK</button>
+    </div>
   </div>
 
   <script src='/socket.io/socket.io.js'></script>
@@ -171,8 +493,30 @@
     const selectedGame = document.getElementById('selected-game');
 
     const userList = document.getElementById('user-list');
+    const countdown = document.getElementById('countdown');
+    const resultPopup = document.getElementById('result-popup');
+    const popupGame = document.getElementById('popup-game');
+    const closePopupButton = document.getElementById('close-popup');
+    
+    //Ajouter les sons
+	const beepSound = '/assets/sounds/beep.mp3';
+	const finalSound = '/assets/sounds/final.mp3';	
+	const fireworkExplodeSound = [
+		'/assets/sounds/firework.mp3',
+		'/assets/sounds/firework2.mp3',
+		'/assets/sounds/firework3.mp3'
+	];
 
     let currentSession = '';
+    let isCreator = false;
+    let countdownActive = false;
+
+	// Fonction pour jouer un son spécifique
+	function playSound(src, vol) {
+	  const audio = new Audio(src);
+	  audio.volume = vol;
+	  audio.play();
+	}  
 
     // Generate random session ID
     function generateSessionId() {
@@ -208,9 +552,9 @@
 
       socket.emit('setUsername', { username, sessionId });
       mainContent.style.display = 'block';
-      sessionIdInput.disabled = true;
-      joinSessionButton.disabled = true;
-      usernameInput.disabled = true;
+      //sessionIdInput.disabled = true;
+      //joinSessionButton.disabled = true;
+      //usernameInput.disabled = true;
     });
 
     // Update game list
@@ -220,38 +564,209 @@
         const li = document.createElement('li');
         li.textContent = game;
 
-        const removeButton = document.createElement('span');
-        removeButton.textContent = '❌';
-        removeButton.addEventListener('click', () => {
-          socket.emit('removeGame', index);
-        });
-
-        li.appendChild(removeButton);
+        if (isCreator) {
+          const removeButton = document.createElement('span');
+          removeButton.textContent = '❌';
+          removeButton.addEventListener('click', () => {
+            if (!countdownActive) {
+              socket.emit('removeGame', index);
+            }
+          });
+          li.appendChild(removeButton);
+        }
+        
         gameList.appendChild(li);
       });
     });
 
     // Update user list
     socket.on('updateUsers', (users) => {
-      userList.innerHTML = '<h3>Participants</h3>';
+      userList.innerHTML = '<h3 class="toCenter">Participants</h3><hr>';
+      isCreator = false;
+      
       for (const userId in users) {
         const user = users[userId];
         const userItem = document.createElement('div');
         userItem.textContent = user.username;
         if (user.isCreator) {
           userItem.textContent += ' ★';
+          if (socket.id === userId) {
+            isCreator = true;
+          }
         }
         userList.appendChild(userItem);
       }
+      
+      // Mettre à jour l'interface en fonction du rôle de l'utilisateur
+      updateUserInterface();
     });
+    
+    // Mettre à jour l'interface en fonction du rôle de l'utilisateur
+    function updateUserInterface() {
+      // Activer/désactiver les contrôles en fonction du rôle
+      addGameButton.disabled = !isCreator || countdownActive;
+      clearGamesButton.disabled = !isCreator || countdownActive;
+      pickRandomButton.disabled = !isCreator || countdownActive;
+      gameInput.disabled = !isCreator || countdownActive;
+    }
+    
+    // Fonction de décompte
+    function startCountdown(callback) {
+      countdownActive = true;
+      updateUserInterface();
+      
+      countdown.style.display = 'flex';
+      let count = 3;
+      
+      countdown.textContent = count;
+      playSound(beepSound, 1);
+      
+      const interval = setInterval(() => {
+        count--;
+        countdown.textContent = count;
+        
+        if (count > 0) {
+          playSound(beepSound, 1);
+        } else {
+          clearInterval(interval);
+          playSound(finalSound, 1);
+          countdown.style.display = 'none';
+          countdownActive = false;
+          if (callback) callback();
+        }
+      }, 1000);
+    }
 
-    // Display random picked game
+    // Create fireworks animation
+    function createFireworks() {
+	  const fireworkContainer = document.createElement('div');
+	  fireworkContainer.className = 'firework-container';
+	  fireworkContainer.style.zIndex = '10001'; // Assurez-vous que le z-index est supérieur à celui de la popup (10000)
+	  document.body.appendChild(fireworkContainer);
+	  
+	  // Jouer le son des feux d'artifice
+	  /*
+	  try {
+		fireworkSound.volume = 0.3;
+		fireworkSound.play();
+	  } catch (e) {
+		console.log("Impossible de jouer le son des feux d'artifice");
+	  }
+	  */
+	  
+	  // Créer plusieurs feux d'artifice avec des délais différents
+	  for (let i = 0; i < 12; i++) {
+		setTimeout(() => {
+		  launchFirework(fireworkContainer);
+		}, i * 300);
+	  }
+	  
+	  // Supprimer le conteneur après la fin des animations
+	  setTimeout(() => {
+		fireworkContainer.remove();
+	  }, 8000);
+	}
+
+	function launchFirework(container) {
+	  // Créer le feu d'artifice principal
+	  const firework = document.createElement('div');
+	  firework.className = 'firework';
+	  
+	  // Position aléatoire
+	  const xPos = Math.random() * 80 + 10; // 10-90% de la largeur de l'écran
+	  firework.style.left = xPos + "%";
+	  
+	  // Couleur aléatoire
+	  const hue = Math.floor(Math.random() * 360);
+	  const saturation = 90 + Math.floor(Math.random() * 10);
+	  const lightness = 50 + Math.floor(Math.random() * 10);
+	  
+	  firework.style.backgroundColor = 'hsl('+hue+', '+saturation+'%, '+lightness+'%)';
+	  firework.style.boxShadow = '0 0 10px 4px hsl('+hue+', '+saturation+'%, '+lightness+'%)';
+	  
+	  container.appendChild(firework);
+	  
+	  // Créer des particules pour l'effet d'explosion
+	  setTimeout(() => {
+		const x = firework.offsetLeft;
+		const y = firework.offsetTop;
+		
+		// Créer plusieurs particules avec des formes et tailles variées
+		const particleCount = 50 + Math.floor(Math.random() * 30);
+		
+		for (let i = 0; i < particleCount; i++) {
+		  const particle = document.createElement('div');
+		  particle.className = 'particle';
+		  
+		  // Direction aléatoire
+		  const angle = Math.random() * Math.PI * 2;
+		  const distance = Math.random() * 150 + 80;
+		  const tx = Math.cos(angle) * distance;
+		  const ty = Math.sin(angle) * distance;
+		  
+		  // Variation de taille pour chaque particule
+		  const size = 2 + Math.random() * 4;
+		  particle.style.width = size + 'px';
+		  particle.style.height = size + 'px';
+		  
+		  particle.style.setProperty('--tx', tx + "px");
+		  particle.style.setProperty('--ty', ty + "px");
+		  
+		  // Couleur aléatoire de la même famille de teinte
+		  const particleHue = hue + Math.random() * 40 - 20;
+		  const particleSat = saturation + Math.floor(Math.random() * 10);
+		  const particleLit = lightness + Math.floor(Math.random() * 30);
+		  
+		  particle.style.backgroundColor = 'hsl('+particleHue+', '+particleSat+'%, '+particleLit+'%)';
+		  particle.style.boxShadow = '0 0 8px 3px hsl('+particleHue+', '+particleSat+'%, '+particleLit+'%)';
+		  
+		  // Position au point d'explosion du feu d'artifice
+		  particle.style.left = x + "px";
+		  particle.style.top = y + "px";
+		  
+		  container.appendChild(particle);
+		}
+		
+		// Supprimer le feu d'artifice principal après l'explosion
+		playSound(fireworkExplodeSound[Math.floor(Math.random() * fireworkExplodeSound.length)], 0.1);
+		firework.remove();
+	  }, 800);
+	}
+
+    // Display random picked game with popup
     socket.on('randomPicked', (game) => {
-      selectedGame.textContent = 'Selected Game: ' + game;
+      if (countdownActive) return;
+      
+      // Démarrer le décompte
+      startCountdown(() => {
+        // Après le décompte, afficher la popup
+        popupGame.textContent = game;
+        resultPopup.style.display = 'flex';
+		resultPopup.classList.add('highlight-selection');
+        createFireworks();
+        
+        // Mettre à jour le texte en-dessous aussi
+        selectedGame.textContent = 'Selected Game: ' + game;
+        //selectedGame.classList.add('highlight-selection');
+        
+        setTimeout(() => {
+          //selectedGame.classList.remove('highlight-selection');
+          resultPopup.classList.remove('highlight-selection');
+        }, 1500);
+      });
+    });
+    
+    // Fermer la popup et réactiver les contrôles
+    closePopupButton.addEventListener('click', () => {
+      resultPopup.style.display = 'none';
+      countdownActive = false;
+      updateUserInterface();
     });
 
     // Add game to list
     addGameButton.addEventListener('click', () => {
+      if (!isCreator || countdownActive) return;
+      
       const game = gameInput.value.trim();
       if (game) {
         socket.emit('addGame', game);
@@ -261,13 +776,86 @@
 
     // Clear game list
     clearGamesButton.addEventListener('click', () => {
+      if (!isCreator || countdownActive) return;
       socket.emit('clearGames');
     });
 
     // Pick random game
     pickRandomButton.addEventListener('click', () => {
+      if (!isCreator || countdownActive) return;
       socket.emit('pickRandom');
     });
+    
+    // Add key event listener for quick game addition
+    gameInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !countdownActive && isCreator) {
+        const game = gameInput.value.trim();
+        if (game) {
+          socket.emit('addGame', game);
+          gameInput.value = '';
+        }
+      }
+    });
+	
+	
+	const shareButton = document.getElementById('share-button');
+	const sharePopup = document.getElementById('share-popup');
+	const shareLink = document.getElementById('share-link');
+	const copyShareLink = document.getElementById('copy-share-link');
+	const closeSharePopup = document.getElementById('close-share-popup');
+	const copySessionId = document.getElementById('copy-session-id');
+	const copySuccess = document.getElementById('copy-success');
+
+	// Afficher la popup de partage
+	shareButton.addEventListener('click', () => {
+	  const sessionId = sessionIdInput.value.trim();
+	  if (sessionId) {
+		const fullUrl = window.location.origin + '?session=' + sessionId;
+		shareLink.value = fullUrl;
+		sharePopup.style.display = 'flex';
+	  } else {
+		alert("Veuillez d'abord rejoindre ou créer une session.");
+	  }
+	});
+
+	// Fermer la popup de partage
+	closeSharePopup.addEventListener('click', () => {
+	  sharePopup.style.display = 'none';
+	});
+
+	// Copier le lien de partage
+	copyShareLink.addEventListener('click', () => {
+	  shareLink.select();
+	  document.execCommand('copy');
+	  showCopySuccess();
+	});
+
+	// Copier l'ID de session
+	copySessionId.addEventListener('click', () => {
+	  if (sessionIdInput.value.trim()) {
+		sessionIdInput.select();
+		document.execCommand('copy');
+		showCopySuccess();
+	  }
+	});
+
+	// Afficher la notification de copie réussie
+	function showCopySuccess() {
+	  copySuccess.style.display = 'block';
+	  setTimeout(() => {
+		copySuccess.style.display = 'none';
+	  }, 2000);
+	}
+
+	// Vérifier si on arrive avec un paramètre de session dans l'URL
+	window.addEventListener('load', () => {
+	  const urlParams = new URLSearchParams(window.location.search);
+	  const sessionParam = urlParams.get('session');
+	  
+	  if (sessionParam) {
+		sessionIdInput.value = sessionParam;
+	  }
+	});
   </script>
 </body>
 </html>
