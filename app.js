@@ -20,6 +20,33 @@ io.on('connection', (socket) => {
   let currentSession = null;
   let username = null;
 
+  // Gérer l'inscription à une session
+    socket.on('join-session', (data) => {
+        currentSession = data.sessionId;
+        username = data.username; // Récupérer le nom d'utilisateur fourni par le client
+        socket.join(data.sessionId);
+        console.log(`User ${username} joined session: ${data.sessionId}`);
+    });
+
+    // Gérer les messages de chat
+    socket.on('chat-message', (message) => {
+        if (currentSession) {
+            socket.to(currentSession).emit('chat-message', {
+                userId: username || socket.id, // Utiliser le nom d'utilisateur si disponible
+                message,
+                isSender: false,
+            });
+
+            // Émettre un message pour l'expéditeur uniquement
+            socket.emit('chat-message', {
+                userId: 'You', // Identifie le message comme venant de l'utilisateur
+                message,
+                isSender: true,
+            });
+        }
+    });
+
+
   // Assign username
   socket.on('setUsername', (data) => {
     username = data.username;
@@ -37,7 +64,7 @@ io.on('connection', (socket) => {
 
   // Add a game
   socket.on('addGame', (game) => {
-    if (currentSession && sessions[currentSession] && sessions[currentSession].creator === socket.id) {
+    if (currentSession && sessions[currentSession]) {
       sessions[currentSession].games.push(game);
       io.to(currentSession).emit('updateList', sessions[currentSession].games);
     }
@@ -503,6 +530,46 @@ const htmlContent = `
 	  background-color: #f0f0f0;
 	  color: #046bda;
 	}
+	
+	#chat-container {
+		position: absolute;
+		bottom: 10px;
+		left: 10px;
+		width: 300px;
+		background: rgba(0, 0, 0, 0.6);
+		color: white;
+		padding: 10px;
+		border-radius: 5px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#chat-box {
+		text-align: left;
+		height: 200px;
+	    overflow-y: auto;
+	    margin-bottom: 10px;
+	    padding: 5px;
+	    border: 1px solid #cccccc21;
+	    border-radius: 5px;
+	    background: #ffffff1c;
+	    color: #e6e6e6;
+	}
+
+	#chat-input {
+		flex: 1;
+		padding: 5px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+	}
+	.txt_chat_user {
+		font-weight: bold;
+		color: #53a6ff;
+	}
+	.txt_chat_user_me {
+		font-weight: bold;
+		color: #ffffff;
+	}
   </style>
 </head>
 <body>
@@ -558,6 +625,14 @@ const htmlContent = `
       <h2 id='selected-game'></h2>
     </div>
   </div>
+
+	<div id="chat-container">
+		<div id="chat-box"></div>
+		<form id="chat-form">
+			<input id="chat-input" type="text" placeholder="Type your message..." />
+			<button type="submit">Send</button>
+		</form>
+	</div>
 
   <div id="user-list">
     <h3 class="toCenter">Participants</h3>
@@ -649,13 +724,63 @@ const htmlContent = `
       }
 
       currentSession = sessionId;
-
+	  
+	  // Joindre une session (assurez-vous que sessionId est défini)
+	  socket.emit('join-session', { sessionId, username });
+	
       socket.emit('setUsername', { username, sessionId });
       mainContent.style.display = 'block';
       //sessionIdInput.disabled = true;
       //joinSessionButton.disabled = true;
       //usernameInput.disabled = true;
     });
+	
+	
+	
+	
+	
+	
+
+	// Envoyer un message de chat
+	const chatInput = document.getElementById('chat-input');
+	const chatForm = document.getElementById('chat-form');
+
+	chatForm.addEventListener('submit', (e) => {
+		e.preventDefault();
+		const message = chatInput.value;
+		if (message) {
+			socket.emit('chat-message', message);
+			chatInput.value = '';
+		}
+	});
+
+	// Recevoir un message de chat
+	const chatBox = document.getElementById('chat-box');
+
+	socket.on('chat-message', (data) => {
+		const messageElement = document.createElement('div');
+		const messageElement_User = document.createElement('span');
+		if (data.isSender) {
+			messageElement_User.classList.add('txt_chat_user_me');
+		} else {
+			messageElement_User.classList.add('txt_chat_user');
+		}
+		const messageElement_Msg = document.createElement('span');
+		
+		messageElement_User.textContent = data.userId;
+		messageElement_Msg.textContent = ' : ' + data.message;
+		
+		messageElement.appendChild(messageElement_User);
+		messageElement.appendChild(messageElement_Msg);
+		
+		chatBox.appendChild(messageElement);
+		chatBox.scrollTop = chatBox.scrollHeight; // Faire défiler vers le bas
+	});
+	
+	
+	
+	
+	
 
     // Update game list
     socket.on('updateList', (games) => {
@@ -704,10 +829,10 @@ const htmlContent = `
     // Mettre à jour l'interface en fonction du rôle de l'utilisateur
     function updateUserInterface() {
       // Activer/désactiver les contrôles en fonction du rôle
-      addGameButton.disabled = !isCreator || countdownActive;
+      //addGameButton.disabled = !isCreator || countdownActive;
       clearGamesButton.disabled = !isCreator || countdownActive;
       pickRandomButton.disabled = !isCreator || countdownActive;
-      gameInput.disabled = !isCreator || countdownActive;
+      //gameInput.disabled = !isCreator || countdownActive;
     }
     
     // Fonction de décompte
@@ -719,14 +844,14 @@ const htmlContent = `
       let count = 3;
       
       countdown.textContent = count;
-      playSound(beepSound, 1);
+      playSound(beepSound, 0.1);
       
       const interval = setInterval(() => {
         count--;
         countdown.textContent = count;
         
         if (count > 0) {
-          playSound(beepSound, 1);
+          playSound(beepSound, 0.1);
         } else {
           clearInterval(interval);
           playSound(finalSound, 1);
@@ -743,16 +868,6 @@ const htmlContent = `
 	  fireworkContainer.className = 'firework-container';
 	  fireworkContainer.style.zIndex = '10001'; // Assurez-vous que le z-index est supérieur à celui de la popup (10000)
 	  document.body.appendChild(fireworkContainer);
-	  
-	  // Jouer le son des feux d'artifice
-	  /*
-	  try {
-		fireworkSound.volume = 0.3;
-		fireworkSound.play();
-	  } catch (e) {
-		console.log("Impossible de jouer le son des feux d'artifice");
-	  }
-	  */
 	  
 	  // Créer plusieurs feux d'artifice avec des délais différents
 	  for (let i = 0; i < 12; i++) {
@@ -865,7 +980,7 @@ const htmlContent = `
 
     // Add game to list
     addGameButton.addEventListener('click', () => {
-      if (!isCreator || countdownActive) return;
+      if (countdownActive) return;
       
       const game = gameInput.value.trim();
       if (game) {
@@ -888,7 +1003,7 @@ const htmlContent = `
     
     // Add key event listener for quick game addition
     gameInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !countdownActive && isCreator) {
+      if (e.key === 'Enter' && !countdownActive) {
         const game = gameInput.value.trim();
         if (game) {
           socket.emit('addGame', game);
